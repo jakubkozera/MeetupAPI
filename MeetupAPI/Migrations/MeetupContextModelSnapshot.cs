@@ -72,8 +72,6 @@ namespace MeetupAPI.Migrations
 
                     b.Property<bool>("IsPrivate");
 
-                    b.Property<int>("LocationId");
-
                     b.Property<string>("Name");
 
                     b.Property<string>("Organizer");

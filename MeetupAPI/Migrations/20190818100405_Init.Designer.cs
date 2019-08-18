@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MeetupAPI.Migrations
 {
     [DbContext(typeof(MeetupContext))]
-    [Migration("20190817131754_Init")]
+    [Migration("20190818100405_Init")]
     partial class Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -73,8 +73,6 @@ namespace MeetupAPI.Migrations
                     b.Property<DateTime>("Date");
 
                     b.Property<bool>("IsPrivate");
-
-                    b.Property<int>("LocationId");
 
                     b.Property<string>("Name");
 

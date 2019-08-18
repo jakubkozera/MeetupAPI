@@ -15,7 +15,6 @@ namespace MeetupAPI.Entities
         public bool IsPrivate { get; set; }
 
         public virtual Location Location { get; set; }
-        public int LocationId { get; set; }
 
         public virtual List<Lecture> Lectures { get; set; }
     }

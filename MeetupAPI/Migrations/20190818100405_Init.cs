@@ -17,8 +17,7 @@ namespace MeetupAPI.Migrations
                     Name = table.Column<string>(nullable: true),
                     Organizer = table.Column<string>(nullable: true),
                     Date = table.Column<DateTime>(nullable: false),
-                    IsPrivate = table.Column<bool>(nullable: false),
-                    LocationId = table.Column<int>(nullable: false)
+                    IsPrivate = table.Column<bool>(nullable: false)
                 },
                 constraints: table =>
                 {
