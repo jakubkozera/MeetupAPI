@@ -23,7 +23,7 @@ namespace MeetupAPI.Controllers
         {
             var meetups = _meetupContext.Meetups.ToList();
 
-            return meetups;
+            return Ok(meetups);
         }
     }
 }
