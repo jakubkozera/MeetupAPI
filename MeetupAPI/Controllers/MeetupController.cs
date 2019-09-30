@@ -88,5 +88,23 @@ namespace MeetupAPI.Controllers
 
             return NoContent();
         }
+
+        [HttpDelete("{name}")]
+        public ActionResult Delete(string name)
+        {
+            var meetup = _meetupContext.Meetups
+                .Include(m => m.Location)
+                .FirstOrDefault(m => m.Name.Replace(" ", "-").ToLower() == name.ToLower());
+
+            if (meetup == null)
+            {
+                return NotFound();
+            }
+
+            _meetupContext.Remove(meetup);
+            _meetupContext.SaveChanges();
+
+            return NoContent();
+        }
     }
 }
