@@ -19,6 +19,8 @@ namespace MeetupAPI
                 .ForMember(m => m.Street, map => map.MapFrom(meetup => meetup.Location.Street));
 
             CreateMap<MeetupDto, Meetup>();
+
+            CreateMap<LectureDto, Lecture>();
         }
     }
 }
