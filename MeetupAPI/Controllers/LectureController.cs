@@ -8,6 +8,7 @@ using MeetupAPI.Entities;
 using MeetupAPI.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace MeetupAPI.Controllers
 {
@@ -16,11 +17,33 @@ namespace MeetupAPI.Controllers
     {
         private readonly MeetupContext _meetupContext;
         private readonly IMapper _mapper;
+        private readonly ILogger<LectureController> _logger;
 
-        public LectureController(MeetupContext meetupContext, IMapper mapper)
+        public LectureController(MeetupContext meetupContext, IMapper mapper, ILogger<LectureController> logger)
         {
             _meetupContext = meetupContext;
             _mapper = mapper;
+            _logger = logger;
+        }
+
+        [HttpDelete]
+        public ActionResult Delete(string meetupName)
+        {
+            var meetup = _meetupContext.Meetups
+                .Include(m => m.Lectures)
+                .FirstOrDefault(m => m.Name.Replace(" ", "-").ToLower() == meetupName.ToLower());
+
+            if (meetup == null)
+            {
+                return NotFound();
+            }
+
+            _logger.LogWarning($"Wykłady dla meetup {meetup.Name} zostały usunięte");
+
+            _meetupContext.Lectures.RemoveRange(meetup.Lectures);
+            _meetupContext.SaveChanges();
+
+            return NoContent();
         }
 
         [HttpDelete("{id}")]
@@ -43,24 +66,6 @@ namespace MeetupAPI.Controllers
             }
 
             _meetupContext.Lectures.Remove(lecture);
-            _meetupContext.SaveChanges();
-
-            return NoContent();
-        }
-
-        [HttpDelete]
-        public ActionResult Delete(string meetupName)
-        {
-            var meetup = _meetupContext.Meetups
-                .Include(m => m.Lectures)
-                .FirstOrDefault(m => m.Name.Replace(" ", "-").ToLower() == meetupName.ToLower());
-
-            if (meetup == null)
-            {
-                return NotFound();
-            }
-
-            _meetupContext.Lectures.RemoveRange(meetup.Lectures);
             _meetupContext.SaveChanges();
 
             return NoContent();
