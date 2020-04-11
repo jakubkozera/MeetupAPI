@@ -11,12 +11,17 @@ namespace MeetupAPI.Entities
     {
         private string _connectionString = "Server=(localdb)\\mssqllocaldb;Database=MeetupDb;Trusted_Connection=True;";
 
+        public DbSet<Role> Roles { get; set; }
+        public DbSet<User> Users { get; set; }
         public DbSet<Meetup> Meetups { get; set; }
         public DbSet<Location> Locations { get; set; }
         public DbSet<Lecture> Lectures { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<User>()
+                .HasOne(u => u.Role);
+
             modelBuilder.Entity<Meetup>()
                 .HasOne(m => m.Location)
                 .WithOne(l => l.Meetup)
