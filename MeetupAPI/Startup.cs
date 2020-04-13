@@ -1,5 +1,9 @@
 ﻿using AutoMapper;
+using FluentValidation;
+using FluentValidation.AspNetCore;
 using MeetupAPI.Entities;
+using MeetupAPI.Models;
+using MeetupAPI.Validators;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
@@ -23,7 +27,8 @@ namespace MeetupAPI
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
-            services.AddControllers();
+            services.AddControllers().AddFluentValidation();
+            services.AddScoped<IValidator<RegisterUserDto>, RegisterUserValidator>(); 
             services.AddDbContext<MeetupContext>();
             services.AddScoped<MeetupSeeder>();
             services.AddAutoMapper(this.GetType().Assembly);
