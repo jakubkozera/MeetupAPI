@@ -1,7 +1,9 @@
-﻿using AutoMapper;
+﻿using System.Text;
+using AutoMapper;
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using MeetupAPI.Entities;
+using MeetupAPI.Identity;
 using MeetupAPI.Models;
 using MeetupAPI.Validators;
 using Microsoft.AspNetCore.Builder;
@@ -10,6 +12,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 
 namespace MeetupAPI
@@ -26,6 +29,27 @@ namespace MeetupAPI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            var jwtOptions = new JwtOptions();
+            Configuration.GetSection("jwt").Bind(jwtOptions);
+
+            services.AddSingleton(jwtOptions);
+
+            services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = "Bearer";
+                options.DefaultScheme = "Bearer";
+                options.DefaultChallengeScheme = "Bearer";
+            }).AddJwtBearer(cfg =>
+            {
+                cfg.RequireHttpsMetadata = false;
+                cfg.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidIssuer = jwtOptions.JwtIssuer,
+                    ValidAudience = jwtOptions.JwtIssuer,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtOptions.JwtKey))
+                };
+            });
+
             services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
             services.AddControllers().AddFluentValidation();
             services.AddScoped<IValidator<RegisterUserDto>, RegisterUserValidator>(); 
@@ -57,6 +81,7 @@ namespace MeetupAPI
                 app.UseHsts();
             }
 
+            app.UseAuthentication();
             app.UseHttpsRedirection();
             app.UseRouting();
             app.UseEndpoints(endpoints =>
