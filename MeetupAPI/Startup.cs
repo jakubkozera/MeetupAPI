@@ -50,6 +50,7 @@ namespace MeetupAPI
                 };
             });
 
+            services.AddScoped<IJwtProvider, JwtProvider>();
             services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
             services.AddControllers().AddFluentValidation();
             services.AddScoped<IValidator<RegisterUserDto>, RegisterUserValidator>(); 
