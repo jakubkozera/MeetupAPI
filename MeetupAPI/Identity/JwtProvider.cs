@@ -25,7 +25,7 @@ namespace MeetupAPI.Identity
                 new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
                 new Claim(ClaimTypes.Role, user.Role.RoleName),
                 new Claim(ClaimTypes.Name, user.Email),
-                new Claim("BirthOfDate", user.DateOfBirth.Value.ToString("dd-MM-yyyy")),
+                new Claim("DateOfBirth", user.DateOfBirth.Value.ToString("dd-MM-yyyy")),
             };
 
             if (!string.IsNullOrEmpty(user.Nationality))
