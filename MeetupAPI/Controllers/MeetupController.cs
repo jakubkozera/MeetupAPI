@@ -1,14 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
+using MeetupAPI.Authorization;
 using MeetupAPI.Entities;
 using MeetupAPI.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace MeetupAPI.Controllers
 {
@@ -18,11 +21,13 @@ namespace MeetupAPI.Controllers
     {
         private readonly MeetupContext _meetupContext;
         private readonly IMapper _mapper;
+        private readonly IAuthorizationService _authorizationService;
 
-        public MeetupController(MeetupContext meetupContext, IMapper mapper)
+        public MeetupController(MeetupContext meetupContext, IMapper mapper, IAuthorizationService authorizationService)
         {
             _meetupContext = meetupContext;
             _mapper = mapper;
+            _authorizationService = authorizationService;
         }
 
         [HttpGet]
@@ -62,6 +67,11 @@ namespace MeetupAPI.Controllers
             }
 
             var meetup = _mapper.Map<Meetup>(model);
+
+            var userId = User.FindFirst(c => c.Type == ClaimTypes.NameIdentifier).Value;
+
+            meetup.CreatedById = int.Parse(userId);
+
             _meetupContext.Meetups.Add(meetup);
             _meetupContext.SaveChanges();
 
@@ -78,6 +88,14 @@ namespace MeetupAPI.Controllers
             if (meetup == null)
             {
                 return NotFound();
+            }
+
+            var authorizationResult = _authorizationService.AuthorizeAsync(User, meetup, new ResourceOperationRequirement(OperationType.Update))
+                .Result;
+
+            if (!authorizationResult.Succeeded)
+            {
+                return Forbid();
             }
 
             if (!ModelState.IsValid)
@@ -107,6 +125,13 @@ namespace MeetupAPI.Controllers
                 return NotFound();
             }
 
+            var authorizationResult = _authorizationService.AuthorizeAsync(User, meetup, new ResourceOperationRequirement(OperationType.Delete))
+                .Result;
+
+            if (!authorizationResult.Succeeded)
+            {
+                return Forbid();
+            }
             _meetupContext.Remove(meetup);
             _meetupContext.SaveChanges();
 

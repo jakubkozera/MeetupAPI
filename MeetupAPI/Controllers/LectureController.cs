@@ -24,6 +24,7 @@ namespace MeetupAPI.Controllers
             _meetupContext = meetupContext;
             _mapper = mapper;
             _logger = logger;
+
         }
 
         [HttpDelete]
