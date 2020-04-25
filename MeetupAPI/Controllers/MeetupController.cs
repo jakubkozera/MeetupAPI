@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using MeetupAPI.Authorization;
 using MeetupAPI.Entities;
+using MeetupAPI.Filters;
 using MeetupAPI.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -17,6 +18,7 @@ namespace MeetupAPI.Controllers
 {
     [Route("api/meetup")]
     [Authorize]
+    [TimeTrackFilter]
     public class MeetupController : ControllerBase
     {
         private readonly MeetupContext _meetupContext;

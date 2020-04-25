@@ -58,6 +58,7 @@ namespace MeetupAPI
                 options.AddPolicy("HasNationality", builder => builder.RequireClaim("Nationality", "German", "English"));
                 options.AddPolicy("AtLeast18", builder => builder.AddRequirements(new MinimumAgeRequirement(18)));
             });
+            services.AddScoped<IActionFilter, TimeTrackFilter>();
             services.AddScoped<IAuthorizationHandler, MeetupResourceOperationHandler>();
             services.AddScoped<IAuthorizationHandler, MinimumAgeHandler>();
             services.AddScoped<IJwtProvider, JwtProvider>();
