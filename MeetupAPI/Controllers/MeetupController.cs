@@ -33,7 +33,6 @@ namespace MeetupAPI.Controllers
         }
 
         [HttpGet]
-        [AllowAnonymous]
         public ActionResult<List<MeetupDetailsDto>> Get()
         {
             var meetups = _meetupContext.Meetups.Include(m => m.Location).ToList();
@@ -42,7 +41,6 @@ namespace MeetupAPI.Controllers
         }
 
         [HttpGet("{name}")]
-        [Authorize(Policy =  "AtLeast18")]
         public ActionResult<MeetupDetailsDto> Get(string name)
         {
             var meetup = _meetupContext.Meetups
