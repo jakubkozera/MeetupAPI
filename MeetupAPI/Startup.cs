@@ -63,7 +63,7 @@ namespace MeetupAPI
             services.AddScoped<IAuthorizationHandler, MinimumAgeHandler>();
             services.AddScoped<IJwtProvider, JwtProvider>();
             services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
-            services.AddControllers().AddFluentValidation();
+            services.AddControllers(options => options.Filters.Add(typeof(ExceptionFilter))).AddFluentValidation();
             services.AddScoped<IValidator<RegisterUserDto>, RegisterUserValidator>(); 
             services.AddDbContext<MeetupContext>();
             services.AddScoped<MeetupSeeder>();
