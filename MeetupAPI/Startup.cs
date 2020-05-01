@@ -59,6 +59,7 @@ namespace MeetupAPI
                 options.AddPolicy("AtLeast18", builder => builder.AddRequirements(new MinimumAgeRequirement(18)));
             });
 
+            services.AddScoped<TimeTrackFilter>();
             services.AddScoped<IAuthorizationHandler, MeetupResourceOperationHandler>();
             services.AddScoped<IAuthorizationHandler, MinimumAgeHandler>();
             services.AddScoped<IJwtProvider, JwtProvider>();
@@ -72,6 +73,7 @@ namespace MeetupAPI
             {
                 c.SwaggerDoc("v1", new OpenApiInfo() {Title = "MeetupAPI", Version = "v1"});
             });
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

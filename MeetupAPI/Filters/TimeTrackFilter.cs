@@ -1,12 +1,19 @@
 ﻿using System;
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.Extensions.Logging;
 
 namespace MeetupAPI.Filters
 {
-    public class TimeTrackFilter : Attribute, IActionFilter
+    public class TimeTrackFilter : IActionFilter
     {
+        private readonly ILogger<TimeTrackFilter> _logger;
         private Stopwatch _stopwatch;
+
+        public TimeTrackFilter(ILogger<TimeTrackFilter> logger)
+        {
+            _logger = logger;
+        }
         public void OnActionExecuted(ActionExecutedContext context)
         {
             _stopwatch.Stop();
@@ -14,7 +21,7 @@ namespace MeetupAPI.Filters
             var milliseconds = _stopwatch.ElapsedMilliseconds;
             var action = context.ActionDescriptor.DisplayName;
 
-            Debug.WriteLine($"Action [{action}], executed in: {milliseconds} milliseconds");
+            _logger.LogInformation($"Action [{action}], executed in: {milliseconds} milliseconds");
         }
 
         public void OnActionExecuting(ActionExecutingContext context)

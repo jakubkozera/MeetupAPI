@@ -18,7 +18,7 @@ namespace MeetupAPI.Controllers
 {
     [Route("api/meetup")]
     [Authorize]
-    [TimeTrackFilter]
+    [ServiceFilter(typeof(TimeTrackFilter))]
     public class MeetupController : ControllerBase
     {
         private readonly MeetupContext _meetupContext;
@@ -33,7 +33,7 @@ namespace MeetupAPI.Controllers
         }
 
         [HttpGet]
-        [NationalityFilter("German,Russian")]
+        [AllowAnonymous]
         public ActionResult<List<MeetupDetailsDto>> Get()
         {
             var meetups = _meetupContext.Meetups.Include(m => m.Location).ToList();
@@ -42,7 +42,7 @@ namespace MeetupAPI.Controllers
         }
 
         [HttpGet("{name}")]
-        [NationalityFilter("English")]
+        [NationalityFilter("German")]
 
         public ActionResult<MeetupDetailsDto> Get(string name)
         {
@@ -61,7 +61,6 @@ namespace MeetupAPI.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "Admin,Moderator")]
         public ActionResult Post([FromBody]MeetupDto model)
         {
             if (!ModelState.IsValid)
