@@ -84,6 +84,7 @@ namespace MeetupAPI
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, MeetupSeeder meetupSeeder)
         {
+            app.UseStaticFiles();
             app.UseCors("FrontEndClient");
             app.UseSwagger();
             app.UseSwaggerUI(c =>
