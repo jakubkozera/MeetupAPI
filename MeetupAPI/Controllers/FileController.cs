@@ -11,9 +11,9 @@ using Microsoft.AspNetCore.StaticFiles;
 namespace MeetupAPI.Controllers
 {
     [Route("file")]
-    [Authorize]
     public class FileController : ControllerBase
     {
+        [ResponseCache(Duration = 1200, VaryByQueryKeys = new []{"name"})]
         [HttpGet]
         public ActionResult GetFile(string name)
         {
