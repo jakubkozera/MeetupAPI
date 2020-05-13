@@ -116,7 +116,7 @@ namespace MeetupAPI
                 endpoints.MapControllers();
             });
 
-            //meetupSeeder.Seed();
+            meetupSeeder.Seed();
         }
 
     }
