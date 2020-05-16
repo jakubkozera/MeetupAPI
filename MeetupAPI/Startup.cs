@@ -70,8 +70,6 @@ namespace MeetupAPI
             services.AddScoped<IValidator<RegisterUserDto>, RegisterUserValidator>(); 
 
             services.AddDbContext<MeetupContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
-
-
             services.AddScoped<MeetupSeeder>();
             services.AddAutoMapper(this.GetType().Assembly);
             services.AddSwaggerGen(c =>
@@ -89,6 +87,7 @@ namespace MeetupAPI
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, MeetupSeeder meetupSeeder, MeetupContext context)
         {
+            RunMigrations(context);
             app.UseResponseCaching();
             app.UseStaticFiles();
             app.UseCors("FrontEndClient");
@@ -107,7 +106,6 @@ namespace MeetupAPI
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
-
             app.UseAuthentication();
             app.UseRouting();
             app.UseAuthorization();
@@ -119,5 +117,13 @@ namespace MeetupAPI
             meetupSeeder.Seed();
         }
 
+        private void RunMigrations(MeetupContext context)
+        {
+            var pendingMigrations = context.Database.GetPendingMigrations();
+            if (pendingMigrations.Any())
+            {
+                context.Database.Migrate();
+            }
+        }
     }
 }
